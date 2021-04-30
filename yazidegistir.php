@@ -1,0 +1,138 @@
+<?php
+	require_once "ayar.php" ;
+	require_once "fonksiyonlar.php";
+
+session_start();
+if(isset($_SESSION["login"]))
+{
+	if($_SESSION["login"]==2 )
+	{
+		
+	}
+	else
+	{
+		header("location:index.php");
+	}
+	
+}
+
+else
+{
+	header("location:index.php");
+}
+
+// yazıyı veritabanından getirme
+    if(isset ($_GET['yaz_id'])) {
+		
+	
+	
+	$baglanti= baglanti($blog_vt_host,$blog_vt_username,$blog_vt_sifre,$blog_vt_name);
+	
+	$sql_baglanti= "SELECT * FROM yazilar WHERE id=".$_GET['yaz_id'];
+
+	$sorgu=mysqli_query($baglanti, $sql_baglanti);
+	
+	
+	while ($satir =mysqli_fetch_array($sorgu))
+    {
+		$a=$satir['baslik']	;
+		$b =$satir['icerik']	;
+		$c =$satir['kategori']	;
+		$d =$satir['tarih']	;
+		$e =$satir['kullanici_adi']	;	
+		$f =$_GET['yaz_id'];
+	}
+	unset($_GET['yaz_id']);
+	 }  // if
+
+// güncelleme
+
+	if(isset ($_POST['kaydet'])) 
+	{
+
+	    $a=$_POST['baslik'];
+		$b =$_POST['icerik'];
+		$c =$_POST['kategori']	;
+		$d =$_POST['tarih']	;
+		$e =$_POST['kullanici_adi']	;	
+		$f =$_POST['yaz_id'];
+	
+	$baglanti= baglanti($blog_vt_host,$blog_vt_username,$blog_vt_sifre,$blog_vt_name);
+	
+	
+	$sql_baglanti= "UPDATE yazilar SET baslik='".$_POST['baslik']."',icerik = '".$_POST['icerik']."', kategori='".$_POST['kategori']."', tarih = '".$_POST['tarih']."', kullanici_adi='".$_POST['kullanici_adi']."' WHERE id=".$_POST['yaz_id'];
+
+					
+	$sorgu=mysqli_query($baglanti, $sql_baglanti);
+	mysqli_close($baglanti);
+	
+	    
+	
+	echo "<p>yazı güncellendi</p>";
+	
+
+	}  
+?>
+
+<html>
+
+<head>
+
+<link href="yonetimstil.css" rel="stylesheet" type="text/css">
+</head>
+
+
+<body>
+
+
+
+<div id="menu">
+	<ul> Yazılar
+	<li><a href="yaziekle.php">yazı ekle </a></li>
+	<li><a href="yazilistele.php">yazı listele(değiştir - sil) </a></li>	
+	</ul>
+	
+	<ul> Kategoriler
+	<li><a href="kategoriekle.php">Kategori ekle </a> </li>
+	<li><a href="kategorilistele.php">Kategori listele(değiştir - sil) </a></li>	
+	</ul>
+	
+	<ul> Kullanıcılar
+	<li><a href="kullaniciekle.php">Kullanıcı ekle </a> </li>
+	<li><a href="kullanicilistele.php">kullanıcı listele(değiştir - sil) </a></li>	
+	</ul>
+    
+    <ul> Yorumlar
+	<li><a href="yorumlistele.php">yorum listele(değiştir - sil) </a></li>	
+	</ul>
+    
+    <ul> Blog
+	<li><a href="index.php">blog ana sayfa</a></li>	
+	</ul>
+</div>
+
+<div id="icerik">
+
+<div><?php echo "Hoş geldiniz"." ".$_SESSION["ad"]."           ";	?> </div>
+
+<p> yazı güncelleme </p>
+
+ <form action="yazidegistir.php" method="post">
+  <p> Kategori  <br><input type="text" name ="kategori" value=<?php echo $c; ?> /> </p>
+	<p> kullanıcı adı  <br><input type="text" name="kullanici_adi" value=<?php echo $e; ?> /> </p>
+    <p> Tarih <br><input type="text" name ="tarih" value=<?php echo $d; ?> /> </p>
+	<p> Baslik<br><input type="text" name ="baslik" value=<?php echo $a; ?> /> 
+	  <input type="hidden" name="yaz_id" id="yaz_id" value=<?php echo $f;?>>
+	</p>
+   <p> içerik<br>  <textarea cols="75" rows="20" name="icerik"><?php echo $b;?></textarea></p>
+   <p> <input type="submit" name="kaydet" value ="GÜNCELLE"/> </p>
+ 
+ </form>
+ 
+ </div>
+ 
+ 
+</body>
+
+
+</html>
